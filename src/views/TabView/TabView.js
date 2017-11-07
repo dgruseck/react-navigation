@@ -226,6 +226,6 @@ const styles = StyleSheet.create({
 
   page: {
     flex: 1,
-    overflow: 'hidden',
+    overflow: 'visible',
   },
 });
