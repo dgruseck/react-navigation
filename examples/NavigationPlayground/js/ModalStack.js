@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import { Button, ScrollView, Text } from 'react-native';
+import { Button, ScrollView, StatusBar, Text } from 'react-native';
 import { SafeAreaView, StackNavigator } from 'react-navigation';
 import SampleText from './SampleText';
 
@@ -36,6 +36,7 @@ const MyNavScreen = ({ navigation, banner }) => (
       )}
       <Button onPress={() => navigation.goBack(null)} title="Go back" />
     </SafeAreaView>
+    <StatusBar barStyle="default" />
   </ScrollView>
 );
 
@@ -68,8 +69,9 @@ const ProfileNavigator = StackNavigator(
   },
   {
     navigationOptions: {
-      header: null,
+      headerLeft: null,
     },
+    mode: 'modal',
   }
 );
 
@@ -87,15 +89,15 @@ MyHeaderTestScreen.navigationOptions = ({ navigation }) => {
 
 const ModalStack = StackNavigator(
   {
-    Home: {
-      screen: MyHomeScreen,
-    },
     ProfileNavigator: {
       screen: ProfileNavigator,
     },
     HeaderTest: { screen: MyHeaderTestScreen },
   },
   {
+    navigationOptions: {
+      header: null,
+    },
     mode: 'modal',
   }
 );

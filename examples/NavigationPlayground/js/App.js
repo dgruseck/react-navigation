@@ -1,7 +1,7 @@
 /* @flow */
 
 import React from 'react';
-import { ScreenOrientation } from 'expo';
+import { Constants, ScreenOrientation } from 'expo';
 
 ScreenOrientation.allow(ScreenOrientation.Orientation.ALL);
 
@@ -11,6 +11,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Text,
+  StatusBar,
   View,
 } from 'react-native';
 import { SafeAreaView, StackNavigator } from 'react-navigation';
@@ -28,41 +29,34 @@ import SimpleStack from './SimpleStack';
 import SimpleTabs from './SimpleTabs';
 import TabAnimations from './TabAnimations';
 
-const ExampleRoutes = {
+const ExampleInfo = {
   SimpleStack: {
     name: 'Stack Example',
     description: 'A card stack',
-    screen: SimpleStack,
   },
   SimpleTabs: {
     name: 'Tabs Example',
     description: 'Tabs following platform conventions',
-    screen: SimpleTabs,
   },
   Drawer: {
     name: 'Drawer Example',
     description: 'Android-style drawer navigation',
-    screen: Drawer,
   },
-  MultipleDrawer: {
-    name: 'Multiple Drawer Example',
-    description: 'Add any drawer you need',
-    screen: MultipleDrawer,
-  },
+  // MultipleDrawer: {
+  //   name: 'Multiple Drawer Example',
+  //   description: 'Add any drawer you need',
+  // },
   TabsInDrawer: {
     name: 'Drawer + Tabs Example',
     description: 'A drawer combined with tabs',
-    screen: TabsInDrawer,
   },
   CustomTabs: {
     name: 'Custom Tabs',
     description: 'Custom tabs with tab router',
-    screen: CustomTabs,
   },
   CustomTransitioner: {
     name: 'Custom Transitioner',
     description: 'Custom transitioner with stack router',
-    screen: CustomTransitioner,
   },
   ModalStack: {
     name:
@@ -73,65 +67,113 @@ const ExampleRoutes = {
       Platform.OS === 'ios'
         ? 'Stack navigation with modals'
         : 'Dynamically showing and hiding the header',
-    screen: ModalStack,
   },
   StacksInTabs: {
     name: 'Stacks in Tabs',
     description: 'Nested stack navigation in tabs',
-    screen: StacksInTabs,
   },
   StacksOverTabs: {
     name: 'Stacks over Tabs',
     description: 'Nested stack navigation that pushes on top of tabs',
-    screen: StacksOverTabs,
   },
   LinkStack: {
     name: 'Link in Stack',
     description: 'Deep linking into a route in stack',
-    screen: SimpleStack,
-    path: 'people/Jordan',
   },
   LinkTabs: {
     name: 'Link to Settings Tab',
     description: 'Deep linking into a route in tab',
-    screen: SimpleTabs,
-    path: 'settings',
   },
   TabAnimations: {
     name: 'Animated Tabs Example',
     description: 'Tab transitions have custom animations',
+  },
+};
+const ExampleRoutes = {
+  SimpleStack: {
+    screen: SimpleStack,
+  },
+  SimpleTabs: {
+    screen: SimpleTabs,
+  },
+  Drawer: {
+    screen: Drawer,
+  },
+  // MultipleDrawer: {
+  //   screen: MultipleDrawer,
+  // },
+  TabsInDrawer: {
+    screen: TabsInDrawer,
+  },
+  CustomTabs: {
+    screen: CustomTabs,
+  },
+  CustomTransitioner: {
+    screen: CustomTransitioner,
+  },
+  ModalStack: {
+    screen: ModalStack,
+  },
+  StacksInTabs: {
+    screen: StacksInTabs,
+  },
+  StacksOverTabs: {
+    screen: StacksOverTabs,
+  },
+  LinkStack: {
+    screen: SimpleStack,
+    path: 'people/Jordan',
+  },
+  LinkTabs: {
+    screen: SimpleTabs,
+    path: 'settings',
+  },
+  TabAnimations: {
     screen: TabAnimations,
   },
 };
 
-const MainScreen = ({ navigation }) => (
-  <ScrollView style={{ flex: 1 }} contentInsetAdjustmentBehavior="automatic">
-    <Banner />
-    {Object.keys(ExampleRoutes).map((routeName: string) => (
-      <TouchableOpacity
-        key={routeName}
-        onPress={() => {
-          const { path, params, screen } = ExampleRoutes[routeName];
-          const { router } = screen;
-          const action = path && router.getActionForPathAndParams(path, params);
-          navigation.navigate(routeName, {}, action);
-        }}
-      >
-        <SafeAreaView
-          style={styles.itemContainer}
-          forceInset={{ vertical: 'never' }}
-        >
-          <View style={styles.item}>
-            <Text style={styles.title}>{ExampleRoutes[routeName].name}</Text>
-            <Text style={styles.description}>
-              {ExampleRoutes[routeName].description}
-            </Text>
-          </View>
-        </SafeAreaView>
-      </TouchableOpacity>
-    ))}
-  </ScrollView>
-);
+class MainScreen extends React.Component<*> {
+  render() {
+    const { navigation } = this.props;
+
+    return (
+      <View style={{ flex: 1 }}>
+        <ScrollView style={{ flex: 1 }}>
+          <Banner />
+          {Object.keys(ExampleRoutes).map((routeName: string) => (
+            <TouchableOpacity
+              key={routeName}
+              onPress={() => {
+                const { path, params, screen } = ExampleRoutes[routeName];
+                const { router } = screen;
+                const action =
+                  path && router.getActionForPathAndParams(path, params);
+                navigation.navigate(routeName, {}, action);
+              }}
+            >
+              <SafeAreaView
+                style={styles.itemContainer}
+                forceInset={{ vertical: 'never' }}
+              >
+                <View style={styles.item}>
+                  <Text style={styles.title}>
+                    {ExampleInfo[routeName].name}
+                  </Text>
+                  <Text style={styles.description}>
+                    {ExampleInfo[routeName].description}
+                  </Text>
+                </View>
+              </SafeAreaView>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+        <StatusBar barStyle="light-content" />
+        <View style={styles.statusBarUnderlay} />
+      </View>
+    );
+  }
+}
 
 const AppNavigator = StackNavigator(
   {
@@ -170,6 +212,14 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     marginBottom: 20,
     resizeMode: 'contain',
+  },
+  statusBarUnderlay: {
+    backgroundColor: '#673ab7',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: Constants.statusBarHeight,
   },
   title: {
     fontSize: 16,
