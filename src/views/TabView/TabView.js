@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, StyleSheet, Platform } from 'react-native';
 import { TabViewAnimated, TabViewPagerPan } from 'react-native-tab-view';
+import SafeAreaView from 'react-native-safe-area-view';
 
 import SceneView from '../SceneView';
 import withCachedChildNavigation from '../../withCachedChildNavigation';
-import SafeAreaView from '../SafeAreaView';
 
 class TabView extends React.PureComponent {
   static defaultProps = {
@@ -140,10 +140,14 @@ class TabView extends React.PureComponent {
     const tabBarVisible =
       options.tabBarVisible == null ? true : options.tabBarVisible;
 
-    const swipeEnabled =
+    let swipeEnabled =
       options.swipeEnabled == null
         ? this.props.swipeEnabled
         : options.swipeEnabled;
+
+    if (typeof swipeEnabled === 'function') {
+      swipeEnabled = swipeEnabled(state);
+    }
 
     if (tabBarComponent !== undefined && tabBarVisible) {
       if (tabBarPosition === 'bottom') {
