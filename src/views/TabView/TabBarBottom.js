@@ -7,8 +7,9 @@ import {
   Platform,
   Keyboard,
 } from 'react-native';
+import SafeAreaView from 'react-native-safe-area-view';
+
 import TabBarIcon from './TabBarIcon';
-import SafeAreaView from '../SafeAreaView';
 import withOrientation from '../withOrientation';
 
 const majorVersion = parseInt(Platform.Version, 10);
@@ -62,6 +63,7 @@ class TabBarBottom extends React.PureComponent {
     if (typeof label === 'string') {
       return (
         <Animated.Text
+          numberOfLines={1}
           style={[
             styles.label,
             { color },
